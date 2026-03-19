@@ -3,128 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>모바일신분증</title>
-
+<title>모바일 카드</title>
 <style>
-body{
-  margin:0;
-  font-family:sans-serif;
-  background:#f2f3f5;
-}
-.top{
-  background:white;
-  padding:15px;
-  text-align:center;
-  font-weight:bold;
-  font-size:20px;
-  cursor:pointer;
-}
-.wrap{
-  padding:14px;
-  max-width:520px;
-  margin:auto;
-}
-.card{
-  background:white;
-  border-radius:18px;
-  padding:20px;
-}
-.title{
-  text-align:center;
-  font-size:24px;
-  font-weight:bold;
-  margin-bottom:20px;
-}
-.photo{
-  width:140px;
-  height:140px;
-  border-radius:14px;
-  background:#ddd;
-  margin:0 auto 18px;
-  display:block;
-  object-fit:cover;
-}
-.name{
-  text-align:center;
-  font-size:22px;
-  font-weight:bold;
-  margin-top:10px;
-}
-.sub{
-  text-align:center;
-  font-size:17px;
-  line-height:1.5;
-}
-.qr{
-  display:none;
-  text-align:center;
-  margin-top:20px;
-}
-.qr img{
-  width:150px;
-  height:150px;
-}
-.btn{
-  margin-top:20px;
-  background:black;
-  color:white;
-  padding:16px;
-  text-align:center;
-  border-radius:12px;
-  font-size:18px;
-  font-weight:bold;
-  cursor:pointer;
-}
-.settings{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:white;
-  z-index:20;
-  padding:20px;
-  overflow:auto;
-}
-.settings h2{
-  margin:0 0 14px;
-}
-.settings p{
-  margin:0 0 12px;
-  color:#666;
-  font-size:13px;
-}
-.settings input{
-  width:100%;
-  padding:12px;
-  margin-bottom:10px;
-  border:1px solid #ccc;
-  border-radius:12px;
-  font-size:16px;
-}
-.settings button{
-  width:100%;
-  padding:14px;
-  border:0;
-  border-radius:12px;
-  font-size:16px;
-  font-weight:bold;
-  margin-top:8px;
-}
-.save{background:#3f7ae0;color:white;}
-.close{background:#ececec;color:#111;}
+*{box-sizing:border-box}
+body{margin:0;font-family:sans-serif;background:#f2f3f5}
+.top{background:#fff;padding:16px;text-align:center;font-weight:700;font-size:20px;cursor:pointer}
+.wrap{max-width:520px;margin:0 auto;padding:14px}
+.card{background:#fff;border-radius:18px;padding:20px}
+.photo{width:140px;height:140px;border-radius:14px;background:#ddd;display:block;margin:0 auto 18px;object-fit:cover}
+.name{text-align:center;font-size:22px;font-weight:700;margin-bottom:8px}
+.sub{text-align:center;font-size:17px;line-height:1.5}
+.qr{display:none;text-align:center;margin-top:20px}
+.qr img{width:150px;height:150px}
+.btn{margin-top:20px;background:#111;color:#fff;padding:16px;text-align:center;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer}
+.settings{display:none;position:fixed;inset:0;background:#fff;z-index:20;padding:20px;overflow:auto}
+.settings h2{margin:0 0 14px}
+.settings input{width:100%;padding:12px;margin-bottom:10px;border:1px solid #ccc;border-radius:12px;font-size:16px}
+.settings button{width:100%;padding:14px;border:0;border-radius:12px;font-size:16px;font-weight:700;margin-top:8px}
+.save{background:#3f7ae0;color:#fff}
+.close{background:#ececec;color:#111}
 </style>
 </head>
-
 <body>
 
-<div class="top" id="secret">모바일신분증</div>
+<div class="top" id="secret">모바일 카드</div>
 
 <div class="wrap">
   <div class="card">
-
-    <div class="title">모바일신분증</div>
-
     <img id="photo" class="photo" alt="사진">
-
     <div class="name" id="name">이름</div>
     <div class="sub" id="birth">000000</div>
     <div class="sub" id="addr">주소</div>
@@ -134,19 +40,15 @@ body{
     </div>
 
     <div class="btn" id="toggleBtn" onclick="toggle()">QR 표시</div>
-
   </div>
 </div>
 
 <div class="settings" id="settings">
   <h2>설정</h2>
-  <p>상단 제목을 5번 누르면 이 화면이 열림</p>
-
   <input id="setName" placeholder="이름">
   <input id="setBirth" placeholder="생년월일">
   <input id="setAddr" placeholder="주소">
   <input id="photoInput" type="file" accept="image/*">
-
   <button class="save" onclick="save()">저장</button>
   <button class="close" onclick="closeSettings()">닫기</button>
 </div>
@@ -165,6 +67,18 @@ function updateQR(){
     "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + data;
 }
 
+function renderDetail(){
+  document.getElementById("name").innerText = savedName;
+  document.getElementById("birth").innerText = savedBirth;
+  document.getElementById("addr").innerText = savedAddr;
+}
+
+function renderMasked(){
+  document.getElementById("name").innerText = savedName;
+  document.getElementById("birth").innerText = savedBirth + "-*******";
+  document.getElementById("addr").innerText = "********";
+}
+
 function toggle(){
   const qr = document.getElementById("qr");
   const btn = document.getElementById("toggleBtn");
@@ -172,14 +86,12 @@ function toggle(){
   if(!isQR){
     qr.style.display = "block";
     btn.innerText = "상세정보 표시";
-    document.getElementById("birth").innerText = savedBirth + "-*******";
-    document.getElementById("addr").innerText = "********";
+    renderMasked();
     isQR = true;
   } else {
     qr.style.display = "none";
     btn.innerText = "QR 표시";
-    document.getElementById("birth").innerText = savedBirth;
-    document.getElementById("addr").innerText = savedAddr;
+    renderDetail();
     isQR = false;
   }
 }
@@ -200,15 +112,8 @@ function save(){
   savedBirth = document.getElementById("setBirth").value || savedBirth;
   savedAddr = document.getElementById("setAddr").value || savedAddr;
 
-  document.getElementById("name").innerText = savedName;
-
-  if(isQR){
-    document.getElementById("birth").innerText = savedBirth + "-*******";
-    document.getElementById("addr").innerText = "********";
-  } else {
-    document.getElementById("birth").innerText = savedBirth;
-    document.getElementById("addr").innerText = savedAddr;
-  }
+  if(isQR) renderMasked();
+  else renderDetail();
 
   updateQR();
   closeSettings();
@@ -227,17 +132,14 @@ document.getElementById("photoInput").addEventListener("change", function(e){
 
 document.getElementById("secret").addEventListener("click", function(){
   tapCount++;
-
   if(tapCount >= 5){
     tapCount = 0;
     openSettings();
   }
-
-  setTimeout(() => {
-    tapCount = 0;
-  }, 2000);
+  setTimeout(() => { tapCount = 0; }, 2000);
 });
 
+renderDetail();
 updateQR();
 </script>
 
