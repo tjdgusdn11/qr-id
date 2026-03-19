@@ -11,34 +11,30 @@ body{
   font-family:sans-serif;
   background:#f2f3f5;
 }
-
 .top{
   background:white;
   padding:15px;
   text-align:center;
   font-weight:bold;
   font-size:20px;
+  cursor:pointer;
 }
-
 .wrap{
   padding:14px;
   max-width:520px;
   margin:auto;
 }
-
 .card{
   background:white;
   border-radius:18px;
   padding:20px;
 }
-
 .title{
   text-align:center;
   font-size:24px;
   font-weight:bold;
   margin-bottom:20px;
 }
-
 .photo{
   width:140px;
   height:140px;
@@ -48,31 +44,26 @@ body{
   display:block;
   object-fit:cover;
 }
-
 .name{
   text-align:center;
   font-size:22px;
   font-weight:bold;
   margin-top:10px;
 }
-
 .sub{
   text-align:center;
   font-size:17px;
   line-height:1.5;
 }
-
 .qr{
   display:none;
   text-align:center;
   margin-top:20px;
 }
-
 .qr img{
   width:150px;
   height:150px;
 }
-
 .btn{
   margin-top:20px;
   background:black;
@@ -84,26 +75,23 @@ body{
   font-weight:bold;
   cursor:pointer;
 }
-
 .settings{
   display:none;
   position:fixed;
   inset:0;
   background:white;
-  padding:20px;
   z-index:20;
+  padding:20px;
+  overflow:auto;
 }
-
 .settings h2{
   margin:0 0 14px;
 }
-
 .settings p{
   margin:0 0 12px;
   color:#666;
   font-size:13px;
 }
-
 .settings input{
   width:100%;
   padding:12px;
@@ -112,7 +100,6 @@ body{
   border-radius:12px;
   font-size:16px;
 }
-
 .settings button{
   width:100%;
   padding:14px;
@@ -122,7 +109,6 @@ body{
   font-weight:bold;
   margin-top:8px;
 }
-
 .save{background:#3f7ae0;color:white;}
 .close{background:#ececec;color:#111;}
 </style>
@@ -130,12 +116,12 @@ body{
 
 <body>
 
-<div class="top" id="secret">개인 프로필 카드</div>
+<div class="top" id="secret">모바일신분증</div>
 
 <div class="wrap">
   <div class="card">
 
-    <div class="title">프로필 카드</div>
+    <div class="title">모바일신분증</div>
 
     <img id="photo" class="photo" alt="사진">
 
@@ -186,18 +172,14 @@ function toggle(){
   if(!isQR){
     qr.style.display = "block";
     btn.innerText = "상세정보 표시";
-
     document.getElementById("birth").innerText = savedBirth + "-*******";
     document.getElementById("addr").innerText = "********";
-
     isQR = true;
   } else {
     qr.style.display = "none";
     btn.innerText = "QR 표시";
-
     document.getElementById("birth").innerText = savedBirth;
     document.getElementById("addr").innerText = savedAddr;
-
     isQR = false;
   }
 }
@@ -219,8 +201,14 @@ function save(){
   savedAddr = document.getElementById("setAddr").value || savedAddr;
 
   document.getElementById("name").innerText = savedName;
-  document.getElementById("birth").innerText = savedBirth;
-  document.getElementById("addr").innerText = savedAddr;
+
+  if(isQR){
+    document.getElementById("birth").innerText = savedBirth + "-*******";
+    document.getElementById("addr").innerText = "********";
+  } else {
+    document.getElementById("birth").innerText = savedBirth;
+    document.getElementById("addr").innerText = savedAddr;
+  }
 
   updateQR();
   closeSettings();
