@@ -1,110 +1,205 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>모바일신분증</title>
+
 <style>
-*{box-sizing:border-box} body{margin:0;font-family:sans-serif;background:#f2f3f5}
-.top{position:relative;background:#fff;padding:14px 16px;text-align:center;font-weight:700;font-size:18px}
-.menu{position:absolute;right:16px;top:10px;font-size:24px;border:0;background:transparent}
-.wrap{padding:14px;max-width:520px;margin:0 auto}
-.card{background:#fff;border-radius:18px;overflow:hidden}
-.body{padding:20px;min-height:420px;display:flex;flex-direction:column}
-.logo{text-align:center;font-size:22px;font-weight:800;margin-bottom:20px}
-.row{display:flex;justify-content:space-between;gap:12px}
-.left{display:flex;gap:12px;flex:1}
-.photo{width:84px;height:84px;border-radius:10px;object-fit:cover;background:#ddd}
-.name{font-size:19px;font-weight:800;margin-bottom:10px}
-.sub{font-size:15px;line-height:1.45}
-.qr{display:none;flex:0 0 128px}
-.qr img{width:128px;height:128px;display:block}
-.sp{flex:1}
-.bar{height:6px;background:#ddd;border-radius:999px;overflow:hidden;margin-top:20px}
-.inner{height:100%;width:100%;background:linear-gradient(90deg,#4a8cff,#4b2cff)}
-.time{font-size:12px;color:#9ca3af;font-weight:700;margin-top:6px}
-.btn{width:100%;border:0;background:#171717;color:#fff;padding:18px;font-size:17px;font-weight:800}
-.set{display:none;position:fixed;inset:0;background:#fff;padding:20px;z-index:20}
-.set h2{margin:0 0 16px}
-.set input{width:100%;padding:12px;margin:0 0 10px;border:1px solid #ccc;border-radius:10px}
-.set button{width:100%;padding:14px;border:0;border-radius:10px;margin-top:8px}
-.save{background:#1976f3;color:#fff}.close{background:#eee}
-.maker{font-size:12px;color:#666;margin:-8px 0 14px}
+body{
+  margin:0;
+  font-family:sans-serif;
+  background:#f2f3f5;
+}
+
+/* 상단 */
+.top{
+  background:white;
+  padding:15px;
+  text-align:center;
+  font-weight:bold;
+  position:relative;
+}
+
+.menu{
+  position:absolute;
+  right:15px;
+  top:10px;
+  font-size:22px;
+  cursor:pointer;
+}
+
+/* 카드 */
+.wrap{padding:15px;}
+
+.card{
+  background:white;
+  border-radius:15px;
+  padding:20px;
+}
+
+/* 제목 */
+.title{
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+  margin-bottom:20px;
+}
+
+/* 정보 */
+.row{
+  display:flex;
+  gap:15px;
+}
+
+.photo{
+  width:100px;
+  height:100px;
+  border-radius:10px;
+  background:#ddd;
+  object-fit:cover;
+}
+
+.info{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.name{
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+/* QR */
+.qr{
+  display:none;
+  text-align:center;
+  margin-top:20px;
+}
+
+.qr img{width:150px;}
+
+/* 버튼 */
+.btn{
+  margin-top:20px;
+  background:black;
+  color:white;
+  padding:15px;
+  text-align:center;
+  font-weight:bold;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* 설정 */
+.settings{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:white;
+  padding:20px;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+}
 </style>
 </head>
+
 <body>
-  <div class="top">
-    모바일신분증
-    <button class="menu" onclick="openSettings()">☰</button>
-  </div>
 
-  <div class="wrap">
-    <div class="card">
-      <div class="body">
-        <div class="logo">모바일신분증</div>
+<div class="top">
+  모바일신분증
+  <div class="menu" onclick="openSettings()">☰</div>
+</div>
 
-        <div class="row">
-          <div class="left">
-            <img id="photo" class="photo" src="https://via.placeholder.com/84" alt="사진">
-            <div>
-              <div class="name" id="name">성현우</div>
-              <div class="sub" id="birth">060219-*******</div>
-              <div class="sub" id="addr">********</div>
-            </div>
-          </div>
+<div class="wrap">
+  <div class="card">
 
-          <div class="qr" id="qr">
-            <img id="qrImg" src="https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=test" alt="QR">
-          </div>
-        </div>
+    <div class="title">모바일신분증</div>
 
-        <div class="sp"></div>
+    <div class="row">
+      <img id="photo" class="photo">
 
-        <div class="bar"><div class="inner" id="inner"></div></div>
-        <div class="time" id="time">남은시간 30초</div>
+      <div class="info">
+        <div class="name" id="name">노무현</div>
+        <div id="birth">000000</div>
+        <div id="addr">전주시</div>
       </div>
-
-      <button class="btn" onclick="toggleQR()" id="toggleBtn">QR 표시</button>
     </div>
-  </div>
 
-  <div class="set" id="settings">
-    <h2>설정</h2>
-    <div class="maker">이걸 만든 대단한 성현우</div>
-    <input id="setName" placeholder="이름">
-    <input id="setBirth" placeholder="생년월일">
-    <input id="setAddr" placeholder="주소">
-    <input id="setPhoto" placeholder="사진 URL">
-    <button class="save" onclick="saveSettings()">저장</button>
-    <button class="close" onclick="closeSettings()">닫기</button>
+    <div class="qr" id="qr">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=test">
+    </div>
+
+    <div class="btn" onclick="toggle()">QR 표시</div>
+
   </div>
+</div>
+
+<!-- 설정 -->
+<div class="settings" id="settings">
+
+  <h2>설정</h2>
+
+  <input id="setName" placeholder="이름">
+  <input id="setBirth" placeholder="생년월일">
+  <input id="setAddr" placeholder="주소">
+
+  <!-- 🔥 갤러리 업로드 -->
+  <input type="file" accept="image/*" onchange="upload(event)">
+
+  <button onclick="save()">저장</button>
+  <button onclick="closeSettings()">닫기</button>
+
+</div>
 
 <script>
-let showQR=false, t=30;
-function toggleQR(){
-  showQR=!showQR;
-  document.getElementById('qr').style.display=showQR?'block':'none';
-  document.getElementById('toggleBtn').innerText=showQR?'상세정보 표시':'QR 표시';
-  document.getElementById('birth').innerText=showQR?'060219-*******':(document.getElementById('setBirth').value||'060219-1234567');
-  document.getElementById('addr').innerText=showQR?'********':(document.getElementById('setAddr').value||'전주시 덕진구');
+function toggle(){
+  let qr=document.getElementById("qr");
+  qr.style.display = qr.style.display==="block" ? "none" : "block";
 }
-function openSettings(){ document.getElementById('settings').style.display='block'; }
-function closeSettings(){ document.getElementById('settings').style.display='none'; }
-function saveSettings(){
-  document.getElementById('name').innerText=document.getElementById('setName').value||'성현우';
-  if(!showQR){
-    document.getElementById('birth').innerText=document.getElementById('setBirth').value||'060219-1234567';
-    document.getElementById('addr').innerText=document.getElementById('setAddr').value||'전주시 덕진구';
-  }
-  let p=document.getElementById('setPhoto').value.trim();
-  if(p) document.getElementById('photo').src=p;
+
+function openSettings(){
+  document.getElementById("settings").style.display="block";
+}
+
+function closeSettings(){
+  document.getElementById("settings").style.display="none";
+}
+
+function save(){
+  document.getElementById("name").innerText =
+    document.getElementById("setName").value;
+
+  document.getElementById("birth").innerText =
+    document.getElementById("setBirth").value;
+
+  document.getElementById("addr").innerText =
+    document.getElementById("setAddr").value;
+
   closeSettings();
 }
-setInterval(()=>{
-  t--; if(t<0)t=30;
-  document.getElementById('time').innerText='남은시간 '+t+'초';
-  document.getElementById('inner').style.width=(t/30*100)+'%';
-},1000);
+
+/* 🔥 갤러리 업로드 */
+function upload(e){
+  const file = e.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(){
+    document.getElementById("photo").src = reader.result;
+  };
+
+  reader.readAsDataURL(file);
+}
 </script>
+
 </body>
 </html>
