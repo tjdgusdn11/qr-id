@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>모바일 카드</title>
+<title>개인 모바일 카드</title>
 
 <style>
 body{
@@ -88,14 +88,16 @@ body{
   overflow:auto;
 }
 
-.settings h2{
-  margin:0 0 14px;
+.creator{
+  position:absolute;
+  top:15px;
+  right:15px;
+  font-size:12px;
+  color:#888;
 }
 
-.settings p{
-  margin:0 0 12px;
-  color:#666;
-  font-size:13px;
+.settings h2{
+  margin:0 0 14px;
 }
 
 .settings input{
@@ -124,7 +126,7 @@ body{
 
 <body>
 
-<div class="top" id="secret">모바일 카드</div>
+<div class="top" id="secret">개인 모바일 카드</div>
 
 <div class="wrap">
   <div class="card">
@@ -132,7 +134,7 @@ body{
     <img id="photo" class="photo" alt="사진">
 
     <div class="name" id="name">이름</div>
-    <div class="sub" id="birth">000000</div>
+    <div class="sub" id="birth">000000-1234567</div>
     <div class="sub" id="addr">주소</div>
 
     <div class="qr" id="qr">
@@ -145,11 +147,13 @@ body{
 </div>
 
 <div class="settings" id="settings">
+  <div class="creator">이걸만든성현우</div>
+
   <h2>설정</h2>
-  <p>상단 제목을 5번 누르면 열림</p>
 
   <input id="setName" placeholder="이름">
-  <input id="setBirth" placeholder="생년월일">
+  <input id="setBirthFront" placeholder="생년월일 앞자리 예: 060907">
+  <input id="setBirthBack" placeholder="뒷자리 예: 1234567">
   <input id="setAddr" placeholder="주소">
   <input id="photoInput" type="file" accept="image/*">
 
@@ -163,25 +167,26 @@ let tapCount = 0;
 let tapTimer = null;
 
 let savedName = "이름";
-let savedBirth = "000000";
+let savedBirthFront = "060907";
+let savedBirthBack = "1234567";
 let savedAddr = "주소";
 
 function updateQR(){
-  const data = encodeURIComponent(savedName + " / " + savedBirth + " / " + savedAddr);
+  const data = encodeURIComponent(savedName + " / " + savedBirthFront + "-" + savedBirthBack + " / " + savedAddr);
   document.getElementById("qrImg").src =
     "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + data;
 }
 
 function renderDetail(){
   document.getElementById("name").innerText = savedName;
-  document.getElementById("birth").innerText = savedBirth;
+  document.getElementById("birth").innerText = savedBirthFront + "-" + savedBirthBack;
   document.getElementById("addr").innerText = savedAddr;
   document.getElementById("addr").style.display = "block";
 }
 
 function renderMasked(){
   document.getElementById("name").innerText = savedName;
-  document.getElementById("birth").innerText = savedBirth + "-*******";
+  document.getElementById("birth").innerText = savedBirthFront + "-*******";
   document.getElementById("addr").style.display = "none";
 }
 
@@ -204,7 +209,8 @@ function toggle(){
 
 function openSettings(){
   document.getElementById("setName").value = savedName;
-  document.getElementById("setBirth").value = savedBirth;
+  document.getElementById("setBirthFront").value = savedBirthFront;
+  document.getElementById("setBirthBack").value = savedBirthBack;
   document.getElementById("setAddr").value = savedAddr;
   document.getElementById("settings").style.display = "block";
 }
@@ -215,7 +221,8 @@ function closeSettings(){
 
 function save(){
   savedName = document.getElementById("setName").value || savedName;
-  savedBirth = document.getElementById("setBirth").value || savedBirth;
+  savedBirthFront = document.getElementById("setBirthFront").value || savedBirthFront;
+  savedBirthBack = document.getElementById("setBirthBack").value || savedBirthBack;
   savedAddr = document.getElementById("setAddr").value || savedAddr;
 
   if(isQR){
