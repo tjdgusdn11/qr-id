@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>모바일 신분증</title>
+
+<!-- 🔥 QR 라이브러리 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+body {
+  margin:0;
+  font-family:sans-serif;
+  background:#f2f3f5;
+}
+
+.header {
+  display:flex;
+  justify-content:space-between;
+  padding:15px;
+  background:white;
+  font-weight:bold;
+}
+
+.container { padding:20px; }
+
+.card {
+  background:white;
+  border-radius:20px;
+  padding:20px;
+  position:relative;
+}
+
+.name { font-weight:bold; font-size:18px; }
+.info { font-size:14px; color:#555; }
+
+/* QR */
+.qr {
+  position:absolute;
+  right:20px;
+  top:50%;
+  transform:translateY(-50%);
+  width:90px;
+  height:90px;
+  display:none;
+}
+
+/* 타이머 */
+.timer { margin-top:20px; }
+
+.bar {
+  height:6px;
+  background:#ddd;
+  border-radius:5px;
+  overflow:hidden;
+}
+.bar-inner {
+  height:100%;
+  width:100%;
+  background:linear-gradient(to right, blue, purple);
+}
+
+/* 버튼 */
+.btn {
+  margin-top:20px;
+  background:black;
+  color:white;
+  padding:15px;
+  text-align:center;
+  border-radius:10px;
+}
+
+/* 설정 */
+.settings {
+  display:none;
+  padding:20px;
+}
+
+.creator {
+  position:absolute;
+  top:10px;
+  right:10px;
+  font-size:12px;
+  color:#888;
+}
+
+input {
+  width:100%;
+  padding:10px;
+  margin:5px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div>모바일 신분증</div>
+  <div onclick="openSettings()">≡</div>
+</div>
+
+<!-- 메인 -->
+<div class="container" id="main">
+
+  <div class="card">
+
+    <img id="profile" src="https://placehold.co/100" width="100"><br><br>
+
+    <div class="name" id="name">홍길동</div>
+    <div class="info" id="dob">20000101-******</div>
+    <div class="info" id="address">********</div>
+
+    <!-- 🔥 QR -->
+    <div id="qr" class="qr"></div>
+
+  </div>
+
+  <div class="timer">
+    <div id="timeText">30초</div>
+    <div class="bar"><div class="bar-inner" id="bar"></div></div>
+  </div>
+
+  <div class="btn" onclick="toggle()" id="btn">
+    QR 표시
+  </div>
+
+</div>
+
+<!-- 설정 -->
+<div class="settings" id="settings">
+
+  <div class="creator">이걸 만든 대단한 성현우</div>
+
+  <h3>정보 설정</h3>
+
+  이름
+  <input id="setName">
+
+  생년월일 앞자리
+  <input id="setDob1">
+
+  생년월일 뒷자리
+  <input id="setDob2">
+
+  주소
+  <input id="setAddress">
+
+  사진
+  <input type="file" id="setImg">
+
+  <button onclick="save()">저장</button>
+  <button onclick="closeSettings()">닫기</button>
+
+</div>
+
+<script>
+let isQR = false;
+
+// 저장값
+let savedName = "홍길동";
+let savedDob1 = "20000101";
+let savedDob2 = "1234567";
+let savedAddress = "서울시 강남구";
+
+// 🔥 QR 생성
+new QRCode(document.getElementById("qr"), {
+  text: "https://google.com", // 👉 바꾸고 싶으면 여기 수정
+  width: 90,
+  height: 90
+});
+
+// 🔥 5번 클릭
+let clickCount = 0;
+function openSettings(){
+  clickCount++;
+  if(clickCount >= 5){
+    document.getElementById("main").style.display = "none";
+    document.getElementById("settings").style.display = "block";
+    clickCount = 0;
+  }
+}
+
+// 닫기
+function closeSettings(){
+  document.getElementById("main").style.display = "block";
+  document.getElementById("settings").style.display = "none";
+}
+
+// 저장
+function save(){
+  savedName = document.getElementById("setName").value || savedName;
+  savedDob1 = document.getElementById("setDob1").value || savedDob1;
+  savedDob2 = document.getElementById("setDob2").value || savedDob2;
+  savedAddress = document.getElementById("setAddress").value || savedAddress;
+
+  document.getElementById("name").innerText = savedName;
+  document.getElementById("dob").innerText = savedDob1 + "-******";
+  document.getElementById("address").innerText = "********";
+
+  const file = document.getElementById("setImg").files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = e=>{
+      document.getElementById("profile").src = e.target.result;
+    }
+    reader.readAsDataURL(file);
+  }
+
+  closeSettings();
+}
+
+// 전환
+function toggle(){
+  const qr = document.getElementById("qr");
+  const btn = document.getElementById("btn");
+  const dob = document.getElementById("dob");
+  const addr = document.getElementById("address");
+
+  if(!isQR){
+    qr.style.display = "block";
+    dob.innerText = savedDob1 + "-******";
+    addr.innerText = "********";
+
+    dob.style.fontSize = "14px";
+    addr.style.fontSize = "14px";
+
+    btn.innerText = "상세정보 표시";
+    isQR = true;
+
+  } else {
+    qr.style.display = "none";
+    dob.innerText = savedDob1 + "-" + savedDob2;
+    addr.innerText = savedAddress;
+
+    dob.style.fontSize = "12px";
+    addr.style.fontSize = "12px";
+
+    btn.innerText = "QR 표시";
+    isQR = false;
+  }
+}
+
+// 타이머
+let time = 30;
+setInterval(()=>{
+  time--;
+  if(time < 0) time = 30;
+
+  document.getElementById("timeText").innerText = time + "초";
+  document.getElementById("bar").style.width = (time/30*100)+"%";
+},1000);
+</script>
+
+</body>
+</html>
