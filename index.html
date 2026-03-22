@@ -10,10 +10,13 @@ body{
   margin:0;
   font-family:-apple-system;
   background:#f2f2f7;
+  padding-bottom:100px;
 }
 
 /* 상단 */
 .header{
+  display:flex;
+  justify-content:space-between;
   padding:15px;
   font-size:20px;
   font-weight:bold;
@@ -37,12 +40,6 @@ body{
   border-radius:12px;
 }
 
-/* QR */
-.qr{
-  width:140px;
-  margin:15px auto;
-}
-
 /* 텍스트 */
 .name{
   font-size:20px;
@@ -50,31 +47,38 @@ body{
   margin-top:10px;
 }
 
-/* 카운트 */
+.info{
+  margin-top:5px;
+  color:#333;
+}
+
+/* QR */
+.qr{
+  width:130px;
+  margin:15px auto;
+}
+
+/* 타이머 */
 .timer{
   margin-top:10px;
-  font-size:14px;
 }
 
 .bar{
   height:5px;
   background:#ddd;
   border-radius:10px;
-  margin-top:5px;
 }
 
 .fill{
   height:5px;
   background:linear-gradient(to right,blue,purple);
   width:100%;
-  border-radius:10px;
 }
 
-/* 하단 버튼 */
+/* 버튼 */
 .bottom{
   position:fixed;
   bottom:0;
-  left:0;
   width:100%;
   padding:15px;
   background:#f2f2f7;
@@ -83,58 +87,73 @@ body{
 button{
   width:100%;
   padding:15px;
-  margin-top:10px;
   border:none;
   border-radius:15px;
+  background:#000;
+  color:#fff;
   font-size:16px;
   font-weight:bold;
 }
 
-.black{
-  background:#000;
-  color:#fff;
+/* 설정창 */
+.menu{
+  position:fixed;
+  right:-100%;
+  top:0;
+  width:80%;
+  height:100%;
+  background:#fff;
+  padding:20px;
+  transition:0.3s;
 }
 
-.gray{
-  background:#444;
-  color:#fff;
+.menu.active{
+  right:0;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">모바일신분증</div>
+<!-- 상단 -->
+<div class="header">
+  <div>모바일신분증</div>
+  <div onclick="openMenu()">☰</div>
+</div>
 
+<!-- 카드 -->
 <div class="card">
 
-  <!-- 사진 -->
-  <img id="photo" class="profile" src="">
+  <img id="photo" class="profile">
 
-  <!-- 이름 -->
-  <div class="name">홍길동</div>
+  <div class="name" id="name">홍길동</div>
+  <div class="info" id="birth">●●●●●● - ●●●●●●</div>
+  <div class="info" id="addr">●●●●●●</div>
 
-  <!-- QR -->
-  <img id="qr" class="qr" src="">
+  <img id="qr" class="qr">
 
-  <!-- 카운트 -->
   <div class="timer">남은시간 <span id="time">30</span>초</div>
-
-  <div class="bar">
-    <div id="fill" class="fill"></div>
-  </div>
+  <div class="bar"><div id="fill" class="fill"></div></div>
 
 </div>
 
-<!-- 하단 버튼 -->
+<!-- 버튼 -->
 <div class="bottom">
-  <button class="black" onclick="toggle()">QR정보 표시</button>
-  <button class="gray" onclick="toggle()">상세정보 표시</button>
+  <button onclick="toggle()">상세정보 표시</button>
+</div>
+
+<!-- 설정 -->
+<div id="menu" class="menu">
+  <h3>설정</h3>
+  이름 <input id="setName"><br><br>
+  생년월일 <input id="setBirth"><br><br>
+  주소 <input id="setAddr"><br><br>
+  <button onclick="save()">저장</button>
 </div>
 
 <script>
-let sec=30;
 let mode="qr";
+let sec=30;
 
 function makeQR(){
   document.getElementById("qr").src =
@@ -149,42 +168,66 @@ setInterval(()=>{
     sec=30;
     makeQR();
   }
-
   document.getElementById("time").innerText=sec;
   document.getElementById("fill").style.width=(sec/30*100)+"%";
 },1000);
 
+/* 전환 */
 function toggle(){
   if(mode==="qr"){
     document.getElementById("qr").style.display="none";
-    document.querySelector(".name").innerText="홍길동\n070907-3483511\n전주시";
+
+    document.getElementById("birth").innerText="2008-01-01 - 1234567";
+    document.getElementById("addr").innerText="전주시";
+
+    document.querySelector("button").innerText="QR정보 표시";
+
     mode="info";
   }else{
     document.getElementById("qr").style.display="block";
-    document.querySelector(".name").innerText="홍길동";
+
+    document.getElementById("birth").innerText="●●●●●● - ●●●●●●";
+    document.getElementById("addr").innerText="●●●●●●";
+
+    document.querySelector("button").innerText="상세정보 표시";
+
     mode="qr";
   }
 }
 
-/* 사진 업로드 */
-document.getElementById("photo").addEventListener("click",()=>{
+/* 설정 */
+function openMenu(){
+  document.getElementById("menu").classList.add("active");
+}
+
+function save(){
+  document.getElementById("name").innerText =
+    document.getElementById("setName").value;
+
+  document.getElementById("birth").innerText =
+    document.getElementById("setBirth").value;
+
+  document.getElementById("addr").innerText =
+    document.getElementById("setAddr").value;
+
+  document.getElementById("menu").classList.remove("active");
+}
+
+/* 사진 */
+document.getElementById("photo").onclick=()=>{
   let input=document.createElement("input");
   input.type="file";
   input.accept="image/*";
 
   input.onchange=e=>{
-    let file=e.target.files[0];
     let reader=new FileReader();
-
     reader.onload=function(e){
       document.getElementById("photo").src=e.target.result;
-    };
-
-    reader.readAsDataURL(file);
-  };
-
+    }
+    reader.readAsDataURL(e.target.files[0]);
+  }
   input.click();
-});
+}
 </script>
 
 </body>
