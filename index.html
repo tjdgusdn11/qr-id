@@ -50,11 +50,9 @@ body{
   flex:1;
 }
 
-/* 글씨 */
 #name{
   font-size:22px;
   font-weight:bold;
-  margin-bottom:5px;
 }
 
 #birth, #addr{
@@ -67,17 +65,17 @@ body{
   width:110px;
 }
 
-/* 타이머 */
+/* 타이머 (카드 밖) */
 .timer{
-  padding:0 20px;
   text-align:center;
+  margin-top:10px;
 }
 
 .bar{
   height:6px;
   background:#ddd;
   border-radius:10px;
-  margin-top:5px;
+  margin:5px 20px;
 }
 
 .fill{
@@ -153,12 +151,13 @@ input{
 
 </div>
 
-<!-- 타이머 -->
+<!-- 🔥 카드 밖 -->
 <div class="timer">
   남은시간 <span id="time">30</span>초
-  <div class="bar">
-    <div class="fill" id="bar"></div>
-  </div>
+</div>
+
+<div class="bar">
+  <div class="fill" id="bar"></div>
 </div>
 
 <div class="bottom">
@@ -179,16 +178,21 @@ input{
 </div>
 
 <script>
-let count=30;
-let showDetail=false; // 🔥 핵심: true면 상세
+
+/* 🔥 DOM 연결 (이게 핵심) */
+const nameEl = document.getElementById("name");
+const birthEl = document.getElementById("birth");
+const addrEl = document.getElementById("addr");
+const qrEl = document.getElementById("qr");
 
 /* 타이머 */
+let count=30;
 function timer(){
   count--;
   if(count<=0) count=30;
 
-  time.innerText=count;
-  bar.style.width=(count/30*100)+"%";
+  document.getElementById("time").innerText=count;
+  document.getElementById("bar").style.width=(count/30*100)+"%";
 
   setTimeout(timer,1000);
 }
@@ -196,88 +200,90 @@ timer();
 
 /* QR */
 function makeQR(){
-  let data=name.innerText + birth.innerText;
-  qr.src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+data;
+  let data=nameEl.innerText + birthEl.innerText;
+  qrEl.src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+data;
 }
 
-/* 🔥 버튼 (완전히 수정됨) */
-toggle.onclick=function(){
+/* 🔥 상세 / QR (완전 수정) */
+let isDetail=false;
 
-  showDetail = !showDetail;
+document.getElementById("toggle").onclick=function(){
 
-  if(showDetail){
-    // 👉 상세정보 보여줌 (QR 숨김)
-    birth.innerText = localStorage.birth + " - " + localStorage.back;
-    addr.innerText = localStorage.addr;
+  isDetail = !isDetail;
 
-    qr.style.display="none";
+  if(isDetail){
+    // 👉 상세 보여줌
+    birthEl.innerText = localStorage.birth + " - " + localStorage.back;
+    addrEl.innerText = localStorage.addr;
+    qrEl.style.display="none";
     this.innerText="QR정보 표시";
 
   }else{
-    // 👉 QR 보여줌 (정보 가림)
-    birth.innerText="•••••• - •••••••";
-    addr.innerText="••••••";
-
-    qr.style.display="block";
+    // 👉 QR 상태
+    birthEl.innerText="•••••• - •••••••";
+    addrEl.innerText="••••••";
+    qrEl.style.display="block";
     this.innerText="상세정보 표시";
   }
 };
 
 /* 설정 5번 */
 let clickCount=0;
-menu.onclick=function(){
+document.getElementById("menu").onclick=function(){
   clickCount++;
   if(clickCount>=5){
-    setting.classList.add("active");
+    document.getElementById("setting").classList.add("active");
     clickCount=0;
   }
 };
 
-/* 저장 */
+/* 🔥 저장 (이름 안바뀌던거 해결) */
 function save(){
 
-  localStorage.name=inputName.value;
-  localStorage.birth=inputBirth.value;
-  localStorage.back=inputBack.value;
-  localStorage.addr=inputAddr.value;
+  localStorage.name = document.getElementById("inputName").value;
+  localStorage.birth = document.getElementById("inputBirth").value;
+  localStorage.back = document.getElementById("inputBack").value;
+  localStorage.addr = document.getElementById("inputAddr").value;
 
-  name.innerText=inputName.value;
-  birth.innerText=inputBirth.value+" - "+inputBack.value;
-  addr.innerText=inputAddr.value;
+  nameEl.innerText = localStorage.name;
+  birthEl.innerText = localStorage.birth + " - " + localStorage.back;
+  addrEl.innerText = localStorage.addr;
 
   makeQR();
-  setting.classList.remove("active");
+
+  document.getElementById("setting").classList.remove("active");
 }
 
 /* 사진 */
-file.onchange=function(e){
+document.getElementById("file").onchange=function(e){
   let reader=new FileReader();
   reader.onload=function(){
-    photo.src=reader.result;
+    document.getElementById("photo").src=reader.result;
     localStorage.photo=reader.result;
   }
   reader.readAsDataURL(e.target.files[0]);
 };
 
-/* 불러오기 */
+/* 🔥 초기 로딩 */
 window.onload=function(){
 
   if(localStorage.name){
-    name.innerText=localStorage.name;
-    birth.innerText=localStorage.birth+" - "+localStorage.back;
-    addr.innerText=localStorage.addr;
+    nameEl.innerText=localStorage.name;
+    birthEl.innerText=localStorage.birth+" - "+localStorage.back;
+    addrEl.innerText=localStorage.addr;
   }
 
   if(localStorage.photo){
-    photo.src=localStorage.photo;
+    document.getElementById("photo").src=localStorage.photo;
   }
 
   makeQR();
 
-  // 🔥 시작은 QR 상태
-  birth.innerText="•••••• - •••••••";
-  addr.innerText="••••••";
+  // 시작은 QR 모드
+  birthEl.innerText="•••••• - •••••••";
+  addrEl.innerText="••••••";
 };
+
 </script>
 
 </body>
