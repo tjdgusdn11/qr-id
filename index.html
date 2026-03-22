@@ -13,55 +13,49 @@ body{
   overflow:hidden;
 }
 
-/* 상단 */
 .header{
   display:flex;
   justify-content:space-between;
-  align-items:center;
   padding:15px;
-  font-weight:bold;
   font-size:20px;
+  font-weight:bold;
 }
 
-/* 카드 */
 .card{
   background:#fff;
   margin:20px;
   border-radius:20px;
   padding:20px;
-  text-align:center;
   box-shadow:0 5px 15px rgba(0,0,0,0.1);
 }
 
-/* 로고 */
-.logo{
-  width:80px;
-  margin:10px auto;
-}
-
-/* 이름 */
-.name{
-  margin-top:10px;
-  font-weight:bold;
-}
-
-/* QR 영역 */
-.qrBox{
+.row{
   display:flex;
-  justify-content:center;
+  justify-content:space-between;
   align-items:center;
-  gap:10px;
-  margin:15px 0;
+}
+
+.info{
+  flex:1;
+}
+
+/* 사진 */
+.photo{
+  width:90px;
+  height:110px;
+  border-radius:10px;
+  object-fit:cover;
+  margin-bottom:10px;
 }
 
 .qr{
-  width:110px;
+  width:100px;
 }
 
-/* 타이머 */
 .timer{
-  font-size:13px;
-  color:#555;
+  text-align:center;
+  margin-top:15px;
+  font-size:14px;
 }
 
 .bar{
@@ -78,28 +72,26 @@ body{
   border-radius:10px;
 }
 
-/* 버튼 */
 .bottom{
   position:fixed;
   bottom:20px;
-  left:0;
   width:100%;
-  padding:0 20px;
+  display:flex;
+  justify-content:center;
 }
 
-button{
-  width:100%;
+.btn{
+  width:90%;
   padding:15px;
-  border:none;
+  background:black;
+  color:white;
   border-radius:15px;
-  background:#000;
-  color:#fff;
+  text-align:center;
   font-weight:bold;
-  font-size:16px;
 }
 
-/* 설정 */
-.menu{
+/* 설정창 */
+.setting{
   position:fixed;
   top:0;
   right:-100%;
@@ -110,8 +102,14 @@ button{
   transition:0.3s;
 }
 
-.menu.active{
+.setting.active{
   right:0;
+}
+
+input{
+  width:100%;
+  margin:10px 0;
+  padding:10px;
 }
 </style>
 </head>
@@ -120,92 +118,146 @@ button{
 
 <div class="header">
   모바일신분증
-  <div onclick="openMenu()">☰</div>
+  <div id="menu">≡</div>
 </div>
 
 <div class="card">
 
-  <!-- 로고 -->
-  <img src="https://i.imgur.com/6o5VY6T.png" class="logo">
+  <!-- 사진 -->
+  <img id="photo" class="photo" src="" alt="">
 
-  <!-- 이름 -->
-  <div class="name" id="name">틱톡 wjdqn24</div>
+  <div class="row">
+    <div class="info">
+      <div id="name">홍길동</div>
+      <div id="birth">070907 - 1234567</div>
+      <div id="addr">전주시 덕진구</div>
+    </div>
 
-  <!-- QR -->
-  <div class="qrBox">
     <img id="qr" class="qr">
   </div>
 
-  <!-- 타이머 -->
-  <div class="timer">남은시간 <span id="time">30</span>초</div>
-  <div class="bar"><div id="fill" class="fill"></div></div>
+  <div class="timer">
+    남은시간 <span id="time">30</span>초
+    <div class="bar">
+      <div class="fill" id="bar"></div>
+    </div>
+  </div>
 
 </div>
 
 <div class="bottom">
-  <button onclick="toggle()" id="btn">상세정보 표시</button>
+  <div class="btn" id="toggle">상세정보 표시</div>
 </div>
 
 <!-- 설정 -->
-<div id="menu" class="menu">
-  <h3>설정</h3>
-  이름 <input id="setName"><br><br>
+<div class="setting" id="setting">
+  <h2>설정</h2>
+
+  <input id="inputName" placeholder="이름">
+  <input id="inputBirth" placeholder="생년월일">
+  <input id="inputBack" placeholder="뒷자리">
+  <input id="inputAddr" placeholder="주소">
+
+  <!-- 👇 사진 선택 -->
+  <input type="file" accept="image/*" id="file">
+
   <button onclick="save()">저장</button>
 </div>
 
 <script>
-let sec=30;
-let mode="qr";
+let count=30;
+let hidden=false;
 let clickCount=0;
 
-/* QR 생성 */
+function timer(){
+  count--;
+  if(count<=0) count=30;
+
+  document.getElementById("time").innerText=count;
+  document.getElementById("bar").style.width=(count/30*100)+"%";
+
+  setTimeout(timer,1000);
+}
+timer();
+
+/* QR */
 function makeQR(){
-  document.getElementById("qr").src =
-  "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="+Date.now();
+  let name=document.getElementById("name").innerText;
+  document.getElementById("qr").src=
+  "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+name;
 }
 makeQR();
 
-/* 타이머 */
-setInterval(()=>{
-  sec--;
-  if(sec<=0){
-    sec=30;
-    makeQR();
-  }
-  document.getElementById("time").innerText=sec;
-  document.getElementById("fill").style.width=(sec/30*100)+"%";
-},1000);
+/* 상세/QR 토글 */
+document.getElementById("toggle").onclick=function(){
+  hidden=!hidden;
 
-/* 전환 */
-function toggle(){
-  if(mode==="qr"){
-    document.getElementById("qr").style.display="none";
-    document.getElementById("name").innerText="●●●●●●";
-    document.getElementById("btn").innerText="QR정보 표시";
-    mode="info";
+  if(hidden){
+    document.getElementById("birth").innerText="•••••• - •••••••";
+    document.getElementById("addr").innerText="••••••";
+    this.innerText="QR정보 표시";
   }else{
-    document.getElementById("qr").style.display="block";
-    document.getElementById("name").innerText="틱톡 wjdqn24";
-    document.getElementById("btn").innerText="상세정보 표시";
-    mode="qr";
+    document.getElementById("birth").innerText=
+      localStorage.birth+" - "+localStorage.back;
+    document.getElementById("addr").innerText=localStorage.addr;
+    this.innerText="상세정보 표시";
   }
-}
+};
 
-/* 5번 눌러 설정 */
-function openMenu(){
+/* 5번 클릭 설정 */
+document.getElementById("menu").onclick=function(){
   clickCount++;
   if(clickCount>=5){
-    document.getElementById("menu").classList.add("active");
+    document.getElementById("setting").classList.add("active");
     clickCount=0;
   }
-}
+};
 
 /* 저장 */
 function save(){
-  document.getElementById("name").innerText =
-    document.getElementById("setName").value;
+  let name=inputName.value;
+  let birth=inputBirth.value;
+  let back=inputBack.value;
+  let addr=inputAddr.value;
 
-  document.getElementById("menu").classList.remove("active");
+  localStorage.name=name;
+  localStorage.birth=birth;
+  localStorage.back=back;
+  localStorage.addr=addr;
+
+  document.getElementById("name").innerText=name;
+  document.getElementById("birth").innerText=birth+" - "+back;
+  document.getElementById("addr").innerText=addr;
+
+  makeQR();
+
+  document.getElementById("setting").classList.remove("active");
+}
+
+/* 👇 사진 선택 */
+document.getElementById("file").addEventListener("change", function(e){
+  let file=e.target.files[0];
+  let reader=new FileReader();
+
+  reader.onload=function(){
+    document.getElementById("photo").src=reader.result;
+    localStorage.photo=reader.result;
+  }
+
+  if(file) reader.readAsDataURL(file);
+});
+
+/* 저장된 값 불러오기 */
+window.onload=function(){
+  if(localStorage.name){
+    name.innerText=localStorage.name;
+    birth.innerText=localStorage.birth+" - "+localStorage.back;
+    addr.innerText=localStorage.addr;
+  }
+
+  if(localStorage.photo){
+    document.getElementById("photo").src=localStorage.photo;
+  }
 }
 </script>
 
