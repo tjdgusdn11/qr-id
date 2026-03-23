@@ -6,289 +6,374 @@
 <title>모바일신분증</title>
 
 <style>
-body{
-  margin:0;
-  font-family:-apple-system;
-  background:#f2f2f7;
-}
+  *{
+    box-sizing:border-box;
+  }
 
-/* 상단 */
-.header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:15px;
-  font-weight:bold;
-  font-size:20px;
-}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    background:#f2f2f7;
+    min-height:100vh;
+  }
 
-/* 카드 */
-.card{
-  background:#fff;
-  margin:15px;
-  border-radius:20px;
-  padding:20px;
-}
+  .header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 18px 10px;
+    font-size:21px;
+    font-weight:700;
+  }
 
-/* 사진 */
-.photo{
-  width:160px;
-  height:200px;
-  border-radius:15px;
-  object-fit:cover;
-  display:block;
-  margin:0 auto 15px;
-}
+  .menu-btn{
+    font-size:22px;
+    user-select:none;
+    cursor:pointer;
+  }
 
-/* 정보 */
-.row{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
+  .card{
+    background:#fff;
+    margin:14px;
+    border-radius:22px;
+    padding:20px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+  }
 
-.info{
-  flex:1;
-}
+  .photo{
+    width:170px;
+    height:210px;
+    display:block;
+    margin:0 auto 18px;
+    object-fit:cover;
+    border-radius:14px;
+    background:#ddd;
+  }
 
-#name{
-  font-size:20px;
-  font-weight:bold;
-}
+  .row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:14px;
+  }
 
-#birth,#addr{
-  font-size:13px;
-  color:#555;
-}
+  .info{
+    flex:1;
+    min-width:0;
+    padding-top:4px;
+  }
 
-/* QR */
-.qr{
-  width:110px;
-}
+  #name{
+    font-size:20px;
+    font-weight:800;
+    margin-bottom:6px;
+    word-break:keep-all;
+  }
 
-/* 타이머 */
-.timer{
-  text-align:center;
-  margin-top:10px;
-}
+  #birth,
+  #addr{
+    font-size:13px;
+    color:#666;
+    line-height:1.45;
+    word-break:keep-all;
+  }
 
-.bar{
-  height:5px;
-  background:#ddd;
-  border-radius:10px;
-  margin:5px 20px;
-}
+  .qr-wrap{
+    width:112px;
+    min-width:112px;
+    display:flex;
+    justify-content:flex-end;
+  }
 
-.fill{
-  height:5px;
-  background:linear-gradient(to right,#4facfe,#8e2de2);
-  width:100%;
-  border-radius:10px;
-}
+  .qr{
+    width:112px;
+    height:112px;
+    display:block;
+  }
 
-/* 버튼 */
-.bottom{
-  position:fixed;
-  bottom:20px;
-  width:100%;
-  display:flex;
-  justify-content:center;
-}
+  .timer-wrap{
+    margin:14px 20px 96px;
+    text-align:center;
+  }
 
-.btn{
-  width:90%;
-  padding:15px;
-  background:black;
-  color:white;
-  border-radius:15px;
-  text-align:center;
-  font-weight:bold;
-}
+  .timer-text{
+    font-size:14px;
+    color:#444;
+    margin-bottom:6px;
+  }
 
-/* 설정 */
-.setting{
-  position:fixed;
-  top:0;
-  right:-100%;
-  width:80%;
-  height:100%;
-  background:white;
-  padding:20px;
-  transition:0.3s;
-}
+  .bar{
+    width:100%;
+    height:6px;
+    background:#ddd;
+    border-radius:999px;
+    overflow:hidden;
+  }
 
-.setting.active{
-  right:0;
-}
+  .fill{
+    width:100%;
+    height:100%;
+    background:linear-gradient(to right,#4facfe,#8e2de2);
+    border-radius:999px;
+  }
 
-input{
-  width:100%;
-  padding:10px;
-  margin:10px 0;
-}
+  .bottom{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:20px;
+    display:flex;
+    justify-content:center;
+    z-index:5;
+  }
+
+  .toggle-btn{
+    width:calc(100% - 28px);
+    max-width:520px;
+    padding:15px;
+    border:none;
+    border-radius:16px;
+    background:#000;
+    color:#fff;
+    font-size:16px;
+    font-weight:700;
+  }
+
+  .setting{
+    position:fixed;
+    top:0;
+    right:-100%;
+    width:82%;
+    max-width:360px;
+    height:100%;
+    background:#fff;
+    padding:20px;
+    transition:right 0.25s ease;
+    z-index:20;
+    box-shadow:-8px 0 24px rgba(0,0,0,0.12);
+    overflow:auto;
+  }
+
+  .setting.active{
+    right:0;
+  }
+
+  .setting h2{
+    margin:0 0 14px;
+    font-size:22px;
+  }
+
+  .setting input{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border:1px solid #ddd;
+    border-radius:12px;
+    font-size:14px;
+  }
+
+  .setting button{
+    width:100%;
+    margin-top:10px;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:#000;
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+  }
 </style>
 </head>
-
 <body>
 
 <div class="header">
-  모바일신분증
-  <div id="menu">≡</div>
+  <div>모바일신분증</div>
+  <div id="menuBtn" class="menu-btn">≡</div>
 </div>
 
 <div class="card">
+  <img id="photo" class="photo" src="https://via.placeholder.com/170x210" alt="photo">
 
-<img id="photo" class="photo">
+  <div class="row">
+    <div class="info">
+      <div id="name">홍길동</div>
+      <div id="birth">•••••• - •••••••</div>
+      <div id="addr">••••••</div>
+    </div>
 
-<div class="row">
-  <div class="info">
-    <div id="name">홍길동</div>
-    <div id="birth">•••••• - •••••••</div>
-    <div id="addr">••••••</div>
+    <div class="qr-wrap">
+      <img id="qr" class="qr" alt="qr">
+    </div>
   </div>
-
-  <img id="qr" class="qr">
 </div>
 
-</div>
-
-<div class="timer">
-  남은시간 <span id="time">30</span>초
-</div>
-
-<div class="bar">
-  <div class="fill" id="bar"></div>
+<div class="timer-wrap">
+  <div class="timer-text">남은시간 <span id="time">30</span>초</div>
+  <div class="bar">
+    <div id="barFill" class="fill"></div>
+  </div>
 </div>
 
 <div class="bottom">
-  <div class="btn" id="toggle">상세정보 표시</div>
+  <button id="toggleBtn" class="toggle-btn">상세정보 표시</button>
 </div>
 
-<!-- 설정 -->
-<div class="setting" id="setting">
+<div id="setting" class="setting">
   <h2>설정</h2>
-
   <input id="inputName" placeholder="이름">
   <input id="inputBirth" placeholder="생년월일">
   <input id="inputBack" placeholder="뒷자리">
   <input id="inputAddr" placeholder="주소">
-  <input type="file" id="file">
-
-  <button onclick="save()">저장</button>
+  <input id="fileInput" type="file" accept="image/*">
+  <button id="saveBtn">저장</button>
 </div>
 
 <script>
+  const els = {
+    name: document.getElementById("name"),
+    birth: document.getElementById("birth"),
+    addr: document.getElementById("addr"),
+    photo: document.getElementById("photo"),
+    qr: document.getElementById("qr"),
+    time: document.getElementById("time"),
+    barFill: document.getElementById("barFill"),
+    toggleBtn: document.getElementById("toggleBtn"),
+    menuBtn: document.getElementById("menuBtn"),
+    setting: document.getElementById("setting"),
+    inputName: document.getElementById("inputName"),
+    inputBirth: document.getElementById("inputBirth"),
+    inputBack: document.getElementById("inputBack"),
+    inputAddr: document.getElementById("inputAddr"),
+    fileInput: document.getElementById("fileInput"),
+    saveBtn: document.getElementById("saveBtn")
+  };
 
-/* 🔥 데이터 구조 */
-let data = {
-  name:"",
-  birth:"",
-  back:"",
-  addr:"",
-  photo:""
-};
+  const defaultData = {
+    name: "홍길동",
+    birth: "070907",
+    back: "1234567",
+    addr: "전주시 덕진구",
+    photo: "https://via.placeholder.com/170x210"
+  };
 
-let isDetail=false;
+  let appData = { ...defaultData };
+  let isDetailMode = false;
+  let menuTapCount = 0;
+  let timeLeft = 30;
 
-/* 저장 불러오기 */
-function load(){
-  let saved = localStorage.getItem("user");
-
-  if(saved){
-    data = JSON.parse(saved);
+  function loadData() {
+    const saved = localStorage.getItem("mobile_id_app_data");
+    if (saved) {
+      try {
+        appData = JSON.parse(saved);
+      } catch (e) {
+        appData = { ...defaultData };
+      }
+    }
   }
 
-  render();
-}
-
-/* 저장 */
-function save(){
-
-  data.name = inputName.value;
-  data.birth = inputBirth.value;
-  data.back = inputBack.value;
-  data.addr = inputAddr.value;
-
-  localStorage.setItem("user", JSON.stringify(data));
-
-  render();
-
-  setting.classList.remove("active");
-}
-
-/* 화면 반영 */
-function render(){
-
-  name.innerText = data.name || "홍길동";
-
-  if(isDetail){
-    birth.innerText = data.birth+" - "+data.back;
-    addr.innerText = data.addr;
-  }else{
-    birth.innerText = "•••••• - •••••••";
-    addr.innerText = "••••••";
+  function saveDataToStorage() {
+    localStorage.setItem("mobile_id_app_data", JSON.stringify(appData));
   }
 
-  if(data.photo){
-    photo.src = data.photo;
+  function renderQR() {
+    const qrPayload = {
+      name: appData.name,
+      birth: appData.birth,
+      back: appData.back,
+      addr: appData.addr
+    };
+
+    els.qr.src =
+      "https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=" +
+      encodeURIComponent(JSON.stringify(qrPayload)) +
+      "&t=" + Date.now();
   }
 
-  makeQR();
-}
+  function renderScreen() {
+    els.name.innerText = appData.name || "";
 
-/* QR */
-function makeQR(){
-  qr.src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data="+data.name;
-}
+    if (isDetailMode) {
+      els.birth.innerText = (appData.birth || "") + " - " + (appData.back || "");
+      els.addr.innerText = appData.addr || "";
+      els.qr.style.display = "none";
+      els.toggleBtn.innerText = "QR정보 표시";
+    } else {
+      els.birth.innerText = "•••••• - •••••••";
+      els.addr.innerText = "••••••";
+      els.qr.style.display = "block";
+      els.toggleBtn.innerText = "상세정보 표시";
+      renderQR();
+    }
 
-/* 토글 */
-toggle.onclick=function(){
-
-  isDetail = !isDetail;
-
-  if(isDetail){
-    this.innerText="QR정보 표시";
-  }else{
-    this.innerText="상세정보 표시";
+    els.photo.src = appData.photo || defaultData.photo;
   }
 
-  render();
-};
-
-/* 설정 5번 */
-let count=0;
-menu.onclick=function(){
-  count++;
-  if(count>=5){
-    setting.classList.add("active");
-    count=0;
+  function openSettingIfNeeded() {
+    menuTapCount += 1;
+    if (menuTapCount >= 5) {
+      menuTapCount = 0;
+      els.inputName.value = appData.name || "";
+      els.inputBirth.value = appData.birth || "";
+      els.inputBack.value = appData.back || "";
+      els.inputAddr.value = appData.addr || "";
+      els.fileInput.value = "";
+      els.setting.classList.add("active");
+    }
   }
-};
 
-/* 사진 */
-file.onchange=function(e){
-  let reader=new FileReader();
-  reader.onload=function(){
-    data.photo = reader.result;
-    localStorage.setItem("user", JSON.stringify(data));
-    render();
+  function handleSave() {
+    appData.name = els.inputName.value || appData.name;
+    appData.birth = els.inputBirth.value || appData.birth;
+    appData.back = els.inputBack.value || appData.back;
+    appData.addr = els.inputAddr.value || appData.addr;
+
+    const file = els.fileInput.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        appData.photo = e.target.result;
+        saveDataToStorage();
+        els.setting.classList.remove("active");
+        renderScreen();
+      };
+      reader.readAsDataURL(file);
+    } else {
+      saveDataToStorage();
+      els.setting.classList.remove("active");
+      renderScreen();
+    }
   }
-  reader.readAsDataURL(e.target.files[0]);
-};
 
-/* 타이머 */
-let sec=30;
-setInterval(()=>{
-  sec--;
-  if(sec<=0) sec=30;
+  function toggleMode() {
+    isDetailMode = !isDetailMode;
+    renderScreen();
+  }
 
-  time.innerText=sec;
-  bar.style.width=(sec/30*100)+"%";
-},1000);
+  function startTimer() {
+    setInterval(function() {
+      timeLeft -= 1;
+      if (timeLeft <= 0) {
+        timeLeft = 30;
+        if (!isDetailMode) {
+          renderQR();
+        }
+      }
 
-/* 시작 */
-load();
+      els.time.innerText = String(timeLeft);
+      els.barFill.style.width = (timeLeft / 30) * 100 + "%";
+    }, 1000);
+  }
 
+  els.toggleBtn.addEventListener("click", toggleMode);
+  els.menuBtn.addEventListener("click", openSettingIfNeeded);
+  els.saveBtn.addEventListener("click", handleSave);
+
+  loadData();
+  renderScreen();
+  startTimer();
 </script>
 
 </body>
