@@ -17,22 +17,16 @@ body{
 /* 상단 */
 .header{
   display:flex;
-  justify-content:space-between;
+  justify-content:center;
   align-items:center;
   padding:15px;
   font-weight:bold;
-}
-
-.title{
-  text-align:center;
-  width:100%;
-  font-size:18px;
+  position:relative;
 }
 
 .menu{
   position:absolute;
   right:15px;
-  font-size:20px;
 }
 
 /* 탭 */
@@ -41,11 +35,6 @@ body{
   justify-content:center;
   gap:30px;
   margin-bottom:10px;
-  font-size:14px;
-}
-
-.tabs div{
-  padding-bottom:5px;
 }
 
 .active{
@@ -59,16 +48,17 @@ body{
   border-radius:20px;
   padding:20px;
   position:relative;
+  min-height:420px; /* 🔥 카드 크게 */
 }
 
 /* 사진 */
 .photo{
   width:150px;
   height:150px;
-  background:#ddd;
   border-radius:15px;
-  margin:0 auto;
   display:block;
+  margin:0 auto;
+  object-fit:cover;
 }
 
 /* 이름 */
@@ -81,12 +71,11 @@ body{
 #qr{
   position:absolute;
   right:20px;
-  top:50%;
-  transform:translateY(-20%);
+  bottom:20px; /* 🔥 오른쪽 아래 고정 */
 }
 
-/* 타이머 */
-.timer{
+/* 타이머 + 버튼 묶음 */
+.bottom-area{
   margin:20px;
 }
 
@@ -102,21 +91,14 @@ body{
   width:100%;
 }
 
-/* 하단 버튼 */
-.bottom{
-  position:fixed;
-  bottom:0;
-  width:100%;
-  padding:15px;
-  background:#fff;
-}
-
+/* 버튼 */
 .btn{
   background:#000;
   color:#fff;
   text-align:center;
   padding:15px;
   border-radius:10px;
+  margin-top:15px;
 }
 
 /* 설정 */
@@ -137,7 +119,7 @@ input{
 
 <!-- 상단 -->
 <div class="header">
-  <div class="title" onclick="tap()">정부24</div>
+  정부24
   <div class="menu">≡</div>
 </div>
 
@@ -150,30 +132,29 @@ input{
 <!-- 카드 -->
 <div class="card" id="card">
 
-  <!-- 사진 -->
   <img id="img" class="photo">
 
-  <!-- 이름 / 정보 -->
   <div class="name" id="name">홍길동</div>
   <div id="dob">20000101-1234567</div>
   <div id="addr">서울시 강남구</div>
 
-  <!-- QR -->
   <div id="qr"></div>
 
 </div>
 
-<!-- 타이머 -->
-<div class="timer">
+<!-- 🔥 타이머 + 버튼 (카드 아래) -->
+<div class="bottom-area">
+
   <div id="time">30초</div>
+
   <div class="bar">
     <div id="bar" class="bar-inner"></div>
   </div>
-</div>
 
-<!-- 버튼 -->
-<div class="bottom">
-  <div class="btn" id="btn" onclick="toggle()">QR 표시</div>
+  <div class="btn" id="btn" onclick="toggle()">
+    QR 표시
+  </div>
+
 </div>
 
 <!-- 설정 -->
@@ -194,7 +175,6 @@ input{
 
 <script>
 
-/* 저장값 */
 let savedName="홍길동";
 let savedDob1="20000101";
 let savedDob2="1234567";
@@ -203,16 +183,16 @@ let savedAddr="서울시 강남구";
 let isQR=false;
 let tapCount=0;
 
-/* 설정 진입 (5번) */
-function tap(){
+/* 5번 설정 */
+document.querySelector(".header").onclick=function(){
   tapCount++;
   if(tapCount===5){
     document.getElementById("card").style.display="none";
-    document.querySelector(".bottom").style.display="none";
+    document.querySelector(".bottom-area").style.display="none";
     document.getElementById("settings").style.display="block";
     tapCount=0;
   }
-}
+};
 
 /* 저장 */
 function save(){
@@ -235,7 +215,7 @@ function save(){
   }
 
   document.getElementById("card").style.display="block";
-  document.querySelector(".bottom").style.display="block";
+  document.querySelector(".bottom-area").style.display="block";
   document.getElementById("settings").style.display="none";
 }
 
