@@ -14,19 +14,54 @@ body{
   font-family:sans-serif;
 }
 
+/* 상단 */
 .header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
   padding:15px;
   font-weight:bold;
+}
+
+.title{
+  text-align:center;
+  width:100%;
+  font-size:18px;
+}
+
+.menu{
+  position:absolute;
+  right:15px;
   font-size:20px;
 }
 
-.container{
+/* 탭 */
+.tabs{
+  display:flex;
+  justify-content:center;
+  gap:30px;
+  margin-bottom:10px;
+  font-size:14px;
+}
+
+.tabs div{
+  padding-bottom:5px;
+}
+
+.active{
+  border-bottom:2px solid black;
+}
+
+/* 카드 */
+.card{
   background:#fff;
   margin:15px;
   border-radius:20px;
   padding:20px;
+  position:relative;
 }
 
+/* 사진 */
 .photo{
   width:150px;
   height:150px;
@@ -36,24 +71,22 @@ body{
   display:block;
 }
 
+/* 이름 */
 .name{
   font-weight:bold;
-  font-size:20px;
   margin-top:15px;
 }
 
-.sub{
-  color:#555;
-  margin-top:5px;
-}
-
+/* QR */
 #qr{
   position:absolute;
   right:20px;
-  bottom:20px;
+  top:50%;
+  transform:translateY(-20%);
 }
 
-.timer-wrap{
+/* 타이머 */
+.timer{
   margin:20px;
 }
 
@@ -61,15 +94,15 @@ body{
   height:6px;
   background:#ddd;
   border-radius:10px;
-  overflow:hidden;
 }
 
 .bar-inner{
   height:100%;
+  background:linear-gradient(to right,blue,purple);
   width:100%;
-  background:linear-gradient(to right, blue, purple);
 }
 
+/* 하단 버튼 */
 .bottom{
   position:fixed;
   bottom:0;
@@ -86,15 +119,15 @@ body{
   border-radius:10px;
 }
 
+/* 설정 */
 #settings{
   display:none;
   padding:20px;
 }
 
 input{
-  display:block;
-  margin:10px 0;
   width:100%;
+  margin:10px 0;
   padding:10px;
 }
 </style>
@@ -102,27 +135,36 @@ input{
 
 <body>
 
-<div class="header" onclick="tap()">정부24</div>
+<!-- 상단 -->
+<div class="header">
+  <div class="title" onclick="tap()">정부24</div>
+  <div class="menu">≡</div>
+</div>
 
-<div class="container">
-  <div style="position:relative">
+<!-- 탭 -->
+<div class="tabs">
+  <div class="active">주민등록증</div>
+  <div onclick="license()">운전면허증</div>
+</div>
 
-    <!-- 사진 (가운데 위) -->
-    <img id="img" class="photo" src="">
+<!-- 카드 -->
+<div class="card" id="card">
 
-    <!-- QR -->
-    <div id="qr"></div>
+  <!-- 사진 -->
+  <img id="img" class="photo">
 
-    <!-- 정보 -->
-    <div class="name" id="name">홍길동</div>
-    <div class="sub" id="dob">20000101-1234567</div>
-    <div class="sub" id="addr">서울시 강남구</div>
+  <!-- 이름 / 정보 -->
+  <div class="name" id="name">홍길동</div>
+  <div id="dob">20000101-1234567</div>
+  <div id="addr">서울시 강남구</div>
 
-  </div>
+  <!-- QR -->
+  <div id="qr"></div>
+
 </div>
 
 <!-- 타이머 -->
-<div class="timer-wrap">
+<div class="timer">
   <div id="time">30초</div>
   <div class="bar">
     <div id="bar" class="bar-inner"></div>
@@ -136,7 +178,10 @@ input{
 
 <!-- 설정 -->
 <div id="settings">
-  <h3>설정</h3>
+  <div style="display:flex;justify-content:space-between">
+    <h3>설정</h3>
+    <div>이걸만든성현우</div>
+  </div>
 
   이름 <input id="setName">
   생년월일 앞 <input id="setDob1">
@@ -149,27 +194,27 @@ input{
 
 <script>
 
-let isQR=false;
-let tapCount=0;
-
-// 저장 데이터
+/* 저장값 */
 let savedName="홍길동";
 let savedDob1="20000101";
 let savedDob2="1234567";
 let savedAddr="서울시 강남구";
 
-// 🔥 5번 클릭 설정
+let isQR=false;
+let tapCount=0;
+
+/* 설정 진입 (5번) */
 function tap(){
   tapCount++;
   if(tapCount===5){
-    document.querySelector(".container").style.display="none";
+    document.getElementById("card").style.display="none";
     document.querySelector(".bottom").style.display="none";
     document.getElementById("settings").style.display="block";
     tapCount=0;
   }
 }
 
-// 저장
+/* 저장 */
 function save(){
   savedName = document.getElementById("setName").value || savedName;
   savedDob1 = document.getElementById("setDob1").value || savedDob1;
@@ -177,25 +222,24 @@ function save(){
   savedAddr = document.getElementById("setAddr").value || savedAddr;
 
   document.getElementById("name").innerText = savedName;
-  document.getElementById("dob").innerText = savedDob1 + "-" + savedDob2;
+  document.getElementById("dob").innerText = savedDob1+"-"+savedDob2;
   document.getElementById("addr").innerText = savedAddr;
 
-  // 사진
   const file=document.getElementById("setImg").files[0];
   if(file){
     const reader=new FileReader();
-    reader.onload=function(e){
+    reader.onload=e=>{
       document.getElementById("img").src=e.target.result;
     }
     reader.readAsDataURL(file);
   }
 
-  document.querySelector(".container").style.display="block";
+  document.getElementById("card").style.display="block";
   document.querySelector(".bottom").style.display="block";
   document.getElementById("settings").style.display="none";
 }
 
-// QR 생성
+/* QR */
 function makeQR(){
   const qr=document.getElementById("qr");
   qr.innerHTML="";
@@ -206,7 +250,7 @@ function makeQR(){
   });
 }
 
-// 토글
+/* 토글 */
 function toggle(){
   const qr=document.getElementById("qr");
   const dob=document.getElementById("dob");
@@ -217,8 +261,8 @@ function toggle(){
     makeQR();
     qr.style.display="block";
 
-    dob.innerText = savedDob1 + "-******";
-    addr.innerText = "********";
+    dob.innerText=savedDob1+"-******";
+    addr.innerText="********";
 
     btn.innerText="상세정보 표시";
     isQR=true;
@@ -226,15 +270,15 @@ function toggle(){
   }else{
     qr.style.display="none";
 
-    dob.innerText = savedDob1 + "-" + savedDob2;
-    addr.innerText = savedAddr;
+    dob.innerText=savedDob1+"-"+savedDob2;
+    addr.innerText=savedAddr;
 
     btn.innerText="QR 표시";
     isQR=false;
   }
 }
 
-// 타이머
+/* 타이머 */
 let t=30;
 setInterval(()=>{
   t--;
@@ -243,6 +287,11 @@ setInterval(()=>{
   document.getElementById("time").innerText=t+"초";
   document.getElementById("bar").style.width=(t/30*100)+"%";
 },1000);
+
+/* 운전면허 */
+function license(){
+  alert("운전면허증 등록이 안되어있습니다");
+}
 
 </script>
 
